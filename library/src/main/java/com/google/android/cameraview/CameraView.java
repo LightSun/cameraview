@@ -265,6 +265,17 @@ public class CameraView extends FrameLayout {
         }
     }
 
+    public void startTextureView() {
+        if (!mImpl.start()) {
+            //store the state ,and restore this state after fall back o Camera1
+            Parcelable state=onSaveInstanceState();
+            // Camera2 uses legacy hardware layer; fall back to Camera1
+            mImpl = new Camera1(mCallbacks, new TextureViewPreview(getContext(), this));
+            onRestoreInstanceState(state);
+            mImpl.start();
+        }
+    }
+
     /**
      * Stop camera preview and close the device. This is typically called from
      * {@link Activity#onPause()}.
