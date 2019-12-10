@@ -128,7 +128,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
-            mCameraView.start();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCameraView.start();
+                }
+            }, 200);
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
             ConfirmationDialogFragment

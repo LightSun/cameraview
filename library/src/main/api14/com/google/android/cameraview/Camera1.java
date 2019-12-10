@@ -334,14 +334,47 @@ class Camera1 extends CameraViewImpl {
         if (mShowingPreview) {
             mCamera.stopPreview();
         }
+        //setZoom();
+        //setPreviewFpsRange();
+        //setPreviewMode();
         mCameraParameters.setPreviewSize(size.getWidth(), size.getHeight());
         mCameraParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
         mCameraParameters.setRotation(calcCameraRotation(mDisplayOrientation));
         setAutoFocusInternal(mAutoFocus);
         setFlashInternal(mFlash);
+        //LogUtil.w("CAMERA", mCameraParameters.flatten());
         mCamera.setParameters(mCameraParameters);
         if (mShowingPreview) {
             mCamera.startPreview();
+        }
+    }
+
+    private void setPreviewMode() {
+        List<String> modes = mCameraParameters.getSupportedSceneModes();
+        if(modes.size() > 0){
+            mCameraParameters.setSceneMode(Camera.Parameters.SCENE_MODE_BEACH);
+        }
+    }
+
+    private void setZoom() {
+        if(mCameraParameters.isZoomSupported()){
+            int zoom = mCameraParameters.getZoom();
+            if(zoom < 0) {
+                zoom = 0;
+            }else if(zoom > mCameraParameters.getMaxZoom()){
+                zoom = mCameraParameters.getMaxZoom();
+            }
+            mCameraParameters.setZoom(zoom);
+        }
+    }
+    private void setPreviewFpsRange(){
+        List<int[]> frameRates = mCameraParameters.getSupportedPreviewFpsRange();
+        if(frameRates.size() > 0){
+            int l_first = 0;
+            int l_last = frameRates.size() - 1;
+            int minFps = (frameRates.get(l_first))[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+            int maxFps = (frameRates.get(l_first))[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
+            mCameraParameters.setPreviewFpsRange(minFps, maxFps);
         }
     }
 
