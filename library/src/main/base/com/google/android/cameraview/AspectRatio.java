@@ -18,16 +18,18 @@ package com.google.android.cameraview;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
+
+import com.heaven7.java.base.anno.NonNull;
+import com.heaven7.java.base.util.SparseArrayDelegate;
+import com.heaven7.java.base.util.SparseFactory;
 
 /**
  * Immutable class for describing proportional relationship between width and height.
  */
 public class AspectRatio implements Comparable<AspectRatio>, Parcelable {
 
-    private final static SparseArrayCompat<SparseArrayCompat<AspectRatio>> sCache
-            = new SparseArrayCompat<>(16);
+    private final static SparseArrayDelegate<SparseArrayDelegate<AspectRatio>> sCache
+            = SparseFactory.newSparseArray(16);
 
     private final int mX;
     private final int mY;
@@ -44,10 +46,10 @@ public class AspectRatio implements Comparable<AspectRatio>, Parcelable {
         int gcd = gcd(x, y);
         x /= gcd;
         y /= gcd;
-        SparseArrayCompat<AspectRatio> arrayX = sCache.get(x);
+        SparseArrayDelegate<AspectRatio> arrayX = sCache.get(x);
         if (arrayX == null) {
             AspectRatio ratio = new AspectRatio(x, y);
-            arrayX = new SparseArrayCompat<>();
+            arrayX = SparseFactory.newSparseArray(10);
             arrayX.put(y, ratio);
             sCache.put(x, arrayX);
             return ratio;

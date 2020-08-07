@@ -20,8 +20,10 @@ import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
-import android.support.v4.util.SparseArrayCompat;
 import android.view.SurfaceHolder;
+
+import com.heaven7.java.base.util.SparseArrayDelegate;
+import com.heaven7.java.base.util.SparseFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,7 +37,7 @@ class Camera1 extends CameraViewImpl {
 
     private static final int INVALID_CAMERA_ID = -1;
 
-    private static final SparseArrayCompat<String> FLASH_MODES = new SparseArrayCompat<>();
+    private static final SparseArrayDelegate<String> FLASH_MODES = SparseFactory.newSparseArray(10);
 
     static {
         FLASH_MODES.put(Constants.FLASH_OFF, Camera.Parameters.FLASH_MODE_OFF);

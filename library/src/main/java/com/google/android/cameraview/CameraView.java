@@ -16,20 +16,17 @@
 
 package com.google.android.cameraview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+
+import com.heaven7.java.base.anno.IntDef;
+import com.heaven7.java.base.anno.NonNull;
+import com.heaven7.java.base.anno.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -154,7 +151,7 @@ public class CameraView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
-            mDisplayOrientationDetector.enable(ViewCompat.getDisplay(this));
+            mDisplayOrientationDetector.enable(this.getDisplay());
         }
     }
 
@@ -252,7 +249,7 @@ public class CameraView extends FrameLayout {
 
     /**
      * Open a camera device and start showing camera preview. This is typically called from
-     * {@link Activity#onResume()}.
+     * 'Activity#onResume()'.
      */
     public void start() {
         if (!mImpl.start()) {
@@ -278,7 +275,7 @@ public class CameraView extends FrameLayout {
 
     /**
      * Stop camera preview and close the device. This is typically called from
-     * {@link Activity#onPause()}.
+     * 'Activity#onPause()'.
      */
     public void stop() {
         mImpl.stop();
@@ -512,20 +509,22 @@ public class CameraView extends FrameLayout {
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR
-                = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks<SavedState>() {
+                = new Parcelable.ClassLoaderCreator<SavedState>() {
 
             @Override
             public SavedState createFromParcel(Parcel in, ClassLoader loader) {
                 return new SavedState(in, loader);
+            }
+            @Override
+            public SavedState createFromParcel(Parcel source) {
+                return createFromParcel(source, null);
             }
 
             @Override
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
-
-        });
-
+        };
     }
 
     /**
