@@ -335,9 +335,7 @@ class Camera2 extends CameraViewImpl {
     @Override
     void takePicture() {
         //fix sometimes mPreviewRequestBuilder = null.
-        if (mAutoFocus && mPreviewRequestBuilder != null) {
-           lockFocus();
-        } else {
+        if (!mAutoFocus || !lockFocus()) {
             captureStillPicture();
         }
     }
@@ -580,14 +578,19 @@ class Camera2 extends CameraViewImpl {
     /**
      * Locks the focus as the first step for a still image capture.
      */
-    private void lockFocus() {
+    private boolean lockFocus() {
+        if(mPreviewRequestBuilder == null){
+            return false;
+        }
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                 CaptureRequest.CONTROL_AF_TRIGGER_START);
         try {
             mCaptureCallback.setState(PictureCaptureCallback.STATE_LOCKING);
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+            return true;
         } catch (CameraAccessException e) {
             Log.e(TAG, "Failed to lock focus.", e);
+            return false;
         }
     }
 
