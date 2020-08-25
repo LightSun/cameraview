@@ -462,7 +462,8 @@ class Camera2 extends CameraViewImpl {
         try {
             mCameraManager.openCamera(mCameraId, mCameraDeviceCallback, null);
         } catch (CameraAccessException e) {
-            throw new RuntimeException("Failed to open camera: " + mCameraId, e);
+            e.printStackTrace();
+            Log.e(TAG, "Failed to open camera: " + mCameraId);
         }
     }
 
@@ -484,7 +485,9 @@ class Camera2 extends CameraViewImpl {
             mCamera.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     mSessionCallback, null);
         } catch (CameraAccessException e) {
-            throw new RuntimeException("Failed to start camera session");
+            //may be hold by other app.
+            Log.e(TAG ,"startCaptureSession: Failed to start camera session");
+            //throw new RuntimeException("Failed to start camera session");
         }
     }
 
@@ -590,7 +593,7 @@ class Camera2 extends CameraViewImpl {
             mCaptureCallback.setState(PictureCaptureCallback.STATE_LOCKING);
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, null);
             return true;
-        } catch (CameraAccessException e) {
+        } catch (CameraAccessException|IllegalStateException e) {
             Log.e(TAG, "Failed to lock focus.", e);
             return false;
         }
@@ -600,6 +603,10 @@ class Camera2 extends CameraViewImpl {
      * Captures a still picture.
      */
     void captureStillPicture() {
+        if(mCamera == null){
+            Log.d(TAG, "captureStillPicture: mCamera = null");
+            return;
+        }
         try {
             CaptureRequest.Builder captureRequestBuilder = mCamera.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE);
